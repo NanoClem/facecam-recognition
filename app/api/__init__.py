@@ -13,9 +13,16 @@ api = Api(api_blueprint,
 
 
 def init_app(app):
+    """Setup api modules and settings
+    
+    Parameters
+    -----
+        app (Flask) -- Flask app object
+    """
+    from . import users
+
+    # register api namespaces
+    users.init_api(api)
+
+    # register blueprints
     app.register_blueprint(api_blueprint, url_prefix='/api')
-
-
-# IMPORT NAMESPACES
-
-# ADD NAMESPACES TO API
