@@ -1,8 +1,17 @@
+import os
 from flask import Flask
+
 import app.settings as settings
 
 
 
+# PATHS
+base_path = os.path.join(os.getcwd(), 'app')
+base_template_path = os.path.join(base_path, 'templates')
+base_static_path = os.path.join(base_path, 'static')
+
+
+# FLASK APP FACTORY
 def create_app(config_object=settings):
     """Create a new Flask app object
     
@@ -16,10 +25,7 @@ def create_app(config_object=settings):
     """
     from .customs_encoders import ObjectIdConverter, MongoJSONEncoder
     from .extensions import mongo
-    from .api import api_blueprint
-    from .home import home_blueprint
-    from .auth import auth_blueprint
-    from .dashboard import dashboard_blueprint
+    from . import api, home, auth, dashboard
 
     # FLASK APP OBJECT
     app = Flask(__name__)
@@ -32,10 +38,10 @@ def create_app(config_object=settings):
     # LOAD EXTENSIONS
     mongo.init_app(app)
 
-    # REGISTER BLUEPRINTS
-    app.register_blueprint(api_blueprint, url_prefix='/api')
-    app.register_blueprint(home_blueprint, url_prefix='/')
-    app.register_blueprint(auth_blueprint, url_prefix='/login')
-    app.register_blueprint(dashboard_blueprint, url_prefix='/dashboard')
+    # INIT APP MODULES
+    api.init_app(app)
+    home.init_app(app)
+    auth.init_app(app)
+    dashboard.init_app(app)
     
     return app
