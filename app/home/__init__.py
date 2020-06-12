@@ -3,7 +3,7 @@ import os
 from app import base_template_path, base_static_path
 
 
-templates_path = os.path.join(base_template_path, 'home')
+templates_path = base_template_path
 static_path    = base_static_path   #os.path.join(base_static_path, 'home')
 
 
