@@ -7,8 +7,8 @@ api_blueprint = Blueprint('api', __name__)
 
 # API constructor
 api = Api(api_blueprint,
-          title = "Face cam recognition",
-          description = "Interact with face data processed from a security cam",
+          title = "Face recognition API",
+          description = "Interact with face data services",
           version = 1.0)
 
 
