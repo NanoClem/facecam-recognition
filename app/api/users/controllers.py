@@ -1,6 +1,5 @@
 from flask import jsonify
 from datetime import datetime
-from bson.json_util import dumps
 from bson.errors import InvalidId
 
 
