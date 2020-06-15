@@ -24,7 +24,7 @@ def create_app(config_object=Config):
         Flask -- Instanciated Flask object with all configurations and app setup 
     """
     from .customs_encoders import ObjectIdConverter, MongoJSONEncoder
-    from .extensions import mongo, csrf
+    from .extensions import mongo, csrf, login_manager
     from . import api, home, auth, dashboard
 
     # FLASK APP OBJECT
@@ -38,6 +38,7 @@ def create_app(config_object=Config):
     # LOAD EXTENSIONS
     mongo.init_app(app)
     csrf.init_app(app)
+    login_manager.init_app(app)
 
     # INIT APP MODULES
     api.init_app(app)
