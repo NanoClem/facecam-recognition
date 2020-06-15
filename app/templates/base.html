@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ title }} - Secure face cam</title>
+        {% if title %}
+        <title>{{ title }} - Face recognition</title>
+        {% else %}
+        <title>Face recognition</title>
+        {% endif %}
+        
         {% block header %}{% endblock %}
     </head>
 
     <body>
+        <!-- Temp navbar -->
+        <div>
+            Face recognition app :
+            <a href={{ url_for('home.home') }}>Home</a>
+            <a href={{ url_for('login.login') }}>Login</a>
+            <a href={{ url_for('register.register') }}>Create account</a>
+            
+        </div>
+        <hr>
+        <!-- Temp server side login verification message -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </body>
 </html> 
