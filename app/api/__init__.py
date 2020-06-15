@@ -19,10 +19,11 @@ def init_app(app):
     -----
         app (Flask) -- Flask app object
     """
-    from . import users
+    from . import users, faces
 
     # register api namespaces
     users.init_api(api)
+    faces.init_api(api)
 
     # register blueprints
     app.register_blueprint(api_blueprint, url_prefix='/api')
