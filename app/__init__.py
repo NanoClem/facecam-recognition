@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 
-import app.settings as settings
+from .configs import Config
 
 
 
@@ -12,7 +12,7 @@ base_static_path = os.path.join(base_path, 'static')
 
 
 # FLASK APP FACTORY
-def create_app(config_object=settings):
+def create_app(config_object=Config):
     """Create a new Flask app object
     
     Parameters
@@ -24,19 +24,20 @@ def create_app(config_object=settings):
         Flask -- Instanciated Flask object with all configurations and app setup 
     """
     from .customs_encoders import ObjectIdConverter, MongoJSONEncoder
-    from .extensions import mongo
+    from .extensions import mongo, csrf
     from . import api, home, auth, dashboard
 
     # FLASK APP OBJECT
     app = Flask(__name__)
 
-    # APP CONFIGS
+    # APP CONFIGURATION
     app.config.from_object(config_object)
     app.url_map.converters['objectid'] = ObjectIdConverter
     app.json_encoder = MongoJSONEncoder
 
     # LOAD EXTENSIONS
     mongo.init_app(app)
+    csrf.init_app(app)
 
     # INIT APP MODULES
     api.init_app(app)
