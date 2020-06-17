@@ -46,4 +46,7 @@ def register():
     """Register page view of the app
     """
     form = RegisterForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        return redirect(url_for('login.login'))
+        
     return render_template('register.html', title='Register', form=form)
