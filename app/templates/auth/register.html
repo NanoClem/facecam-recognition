@@ -2,10 +2,30 @@
 
 <!-- HEADER -->
 {% block header %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('register.static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
 <!-- BODY -->
 {% block content %}
-    <h1>Register</h1>
+    <h1>Create account</h1>
+    <form action="", method="POST" novalidate>  <!-- novalidate let Flask handle form validation -->
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }} <br>
+            {{ form.username(size=35) }}
+        </p>
+        <p>
+            {{ form.pseudo.label }} <br>
+            {{ form.pseudo(size=32) }}
+        </p>
+        <p>
+            {{ form.password.label }} <br>
+            {{ form.password(size=32) }}
+        </p>
+        <p>
+            {{ form.confirm.label }} <br>
+            {{ form.confirm(size=32) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
 {% endblock %} 
