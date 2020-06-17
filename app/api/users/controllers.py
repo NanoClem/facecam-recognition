@@ -54,6 +54,15 @@ class UserController(object):
         if data:
             return jsonify(data)
         return {}
+
+
+    def getByEmail(self, email):
+        """ Get a user by its email
+        """
+        data = self.db.find_one({"email": email})
+        if data:
+            return jsonify(data)
+        return {}
         
 
     #---------------------------------------------

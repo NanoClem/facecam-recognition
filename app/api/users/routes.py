@@ -83,6 +83,25 @@ class UserByPseudo(Resource):
 
 
 #---------------------------------------------
+#   CRUD BY user email
+#---------------------------------------------
+
+@ns.route("/<string:email>")
+@ns.response(404, 'user not found')
+@ns.param('email', 'The user email')
+class UserByEmail(Resource):
+    """ Get, update or delete one user by its email
+    """
+
+    @ns.doc('get_user_by_email')
+    @ns.response(200, 'success')
+    def get(self, email):
+        """ Get a user by its email
+        """
+        return make_response(ctrl.getByEmail(email), 200)
+
+
+#---------------------------------------------
 #   CRUD BY ID
 #---------------------------------------------
 
