@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
 
 <!-- HEADER -->
 {% block header %}
@@ -8,17 +10,11 @@
 <!-- BODY -->
 {% block content %}
     <h1>Login</h1>
-    <form action="", method="POST" novalidate>  <!-- novalidate let Flask handle form validation -->
+    <form action={{ url_for('login.login') }} method="POST" novalidate>  <!-- novalidate let Flask handle form validation -->
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }} <br>
-            {{ form.username(size=35) }}
-        </p>
-        <p>
-            {{ form.password.label }} <br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ render_field(form.username) }}</p>
+        <p>{{ render_field(form.password) }}</p>
+        <p>{{ render_field(form.remember_me) }}</p>
+        <input type="submit" value="Login">
     </form>
 {% endblock %} 
