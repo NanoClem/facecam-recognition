@@ -37,14 +37,14 @@ class UserController(object):
         """ Get all users stored in database 
         """
         cursor = list(self.db.find({}))
-        return jsonify(cursor)
+        return cursor
 
 
     def get_user(self, data):
         """ Get one or many user matching with the payload
         """
         cursor = list(self.db.find(data))
-        return jsonify(cursor)
+        return cursor
 
 
     def getByPseudo(self, pseudo):
@@ -52,7 +52,7 @@ class UserController(object):
         """
         data = self.db.find_one({"pseudo": pseudo})
         if data:
-            return jsonify(data)
+            return data
         return {}
 
 
@@ -61,7 +61,7 @@ class UserController(object):
         """
         data = self.db.find_one({"email": email})
         if data:
-            return jsonify(data)
+            return data
         return {}
         
 

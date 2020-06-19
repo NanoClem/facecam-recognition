@@ -18,12 +18,12 @@ class UserList(Resource):
 
     @ns.doc('get_all_users') #, security='apikey')
     @ns.response(200, 'Success')
-    #@ns.marshal_list_with(model)
+    @ns.marshal_list_with(model)
     #@token_required
     def get(self):
         """ Return a list of all stored users
         """
-        return make_response(ctrl.getAll(), 200)
+        return ctrl.getAll(), 200
 
 
     @ns.doc('create_many_users')
@@ -57,10 +57,11 @@ class User(Resource):
     @ns.doc('get_one_user')
     @ns.response(200, 'Success')
     @ns.expect(model)
+    @ns.marshal_list_with(model)
     def get(self):
         """ Get one or many users matching with given body
         """
-        return make_response(ctrl.get_user(ns.payload), 200)
+        return ctrl.get_user(ns.payload), 200
 
 
 #---------------------------------------------
@@ -76,10 +77,11 @@ class UserByPseudo(Resource):
 
     @ns.doc('get_user_by_pseudo')
     @ns.response(200, 'success')
+    @ns.marshal_with(model)
     def get(self, pseudo):
         """ Get a user by its pseudo
         """
-        return make_response(ctrl.getByPseudo(pseudo), 200)
+        return ctrl.getByPseudo(pseudo), 200
 
 
 #---------------------------------------------
@@ -95,10 +97,11 @@ class UserByEmail(Resource):
 
     @ns.doc('get_user_by_email')
     @ns.response(200, 'success')
+    @ns.marshal_with(model)
     def get(self, email):
         """ Get a user by its email
         """
-        return make_response(ctrl.getByEmail(email), 200)
+        return ctrl.getByEmail(email), 200
 
 
 #---------------------------------------------
@@ -114,10 +117,11 @@ class UserByID(Resource):
 
     @ns.doc('get_user_by_id')
     @ns.response(200, 'Success')
+    @ns.marshal_with(model)
     def get(self, id):
         """ Returns a user by its id
         """
-        return make_response(ctrl.getByID(id), 200)
+        return ctrl.getByID(id), 200
 
 
     @ns.doc('delete_user_by_id')
