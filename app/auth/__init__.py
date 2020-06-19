@@ -32,7 +32,10 @@ login_manager.login_message = u'You need to be logged in to access this page'
 @login_manager.user_loader
 def load_user(user_id):
     user = User.getByEmail(user_id)
-    return User(user['email']) if user else None
+    return User(
+        email=user['email'], 
+        pseudo=user['pseudo'], 
+        hash_password=user['password']) if user else None
 
 
 # INIT APP
