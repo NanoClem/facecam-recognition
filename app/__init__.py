@@ -34,6 +34,7 @@ def create_app(config_object=Config):
     app.config.from_object(config_object)
     app.url_map.converters['objectid'] = ObjectIdConverter
     app.json_encoder = MongoJSONEncoder
+    csrf.exempt(api.api_blueprint)      # disable csrf protection on rest api calls
 
     # LOAD EXTENSIONS
     mongo.init_app(app)
