@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 import bcrypt
 
-from ..extensions import login_manager
+from ..extensions import login_manager, mongo
 
 
 
@@ -9,8 +9,10 @@ class User(UserMixin):
     """
     """
 
-    def __init__(self, username):
-      self.username = username
+    def __init__(self, email, pseudo, hash_password):
+      self.email    = email
+      self.pseudo   = pseudo
+      self.password = hash_password
 
 
     def is_authenticated(self):
@@ -23,10 +25,30 @@ class User(UserMixin):
         return False
 
     def get_id(self):
-        return self.username
+        return self.email
 
+    
+    def toJSON(self):
+        return {
+            'email': self.email,
+            'pseudo': self.pseudo,
+            'password': self.password
+        }
 
     @classmethod
     def getByEmail(cls, email):
-        return {'email': email, 'password': b'$2b$12$zP/rp3o2zLuACt8TYd/FtOpSyDkKpNts4Te1Iu0RKs07xMR7tvMfu'}
+        user = mongo.db.users.find_one({'email': email})
+        if user:
+            return {'email': user['email'], 'pseudo': user['pseudo'], 'password': user['password']}
+
+    @classmethod
+    def getByPseudo(cls, pseudo):
+        user = mongo.db.users.find_one({'pseudo': pseudo})
+        if user:
+            return {'email': user['email'], 'pseudo': user['pseudo'], 'password': user['password']}
+
+    @classmethod
+    def save_user(cls, email, pseudo, hash_password) -> None:
+        new_user = cls(email, pseudo, hash_password)
+        mongo.db.users.insert_one(new_user.toJSON())
     

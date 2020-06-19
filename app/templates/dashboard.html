@@ -8,4 +8,7 @@
 <!-- BODY -->
 {% block content %}
     <h1>Dashboard</h1>
+    {% if current_user.is_authenticated %}
+        <p>Welcome {{ current_user.pseudo}}</p>
+    {% endif %}
 {% endblock %} 

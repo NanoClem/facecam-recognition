@@ -3,7 +3,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 
 from ..auth import login_blueprint as linbp, logout_blueprint as loutbp, register_blueprint as rbp
 from .forms import LoginForm, RegisterForm
-from .controllers import LoginController
+from .controllers import LoginController, RegisterController
 from .models import User
 
 
@@ -21,8 +21,9 @@ def login():
     if request.method == 'POST' and form.validate_on_submit():
         username = form.username.data
         if LoginController.try_login(username, form.password.data):
-            user = User(username=username)
-            login_user(user, remember=form.remember_me.data)
+            user = User.getByEmail(username)
+            user_obj = User(email=user['email'], pseudo=user['pseudo'], hash_password=user['password'])
+            login_user(user_obj, remember=form.remember_me.data)
             return redirect(url_for('dashboard.dashboard'))
         else:
             flash('Login Unsuccessful. Wrong email or password', 'danger')
@@ -45,8 +46,13 @@ def logout():
 def register():
     """Register page view of the app
     """
+    # Check if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard.dashboard'))
+        
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
-        return redirect(url_for('login.login'))
+        if RegisterController.register_user(form.username.data, form.pseudo.data, form.password.data):
+            return redirect(url_for('login.login'))
         
     return render_template('register.html', title='Register', form=form)

@@ -5,6 +5,7 @@ from .models import User
 
 
 
+# LOGIN CONTROLLER
 class LoginController(object):
 
     @classmethod
@@ -23,6 +24,7 @@ class LoginController(object):
         return False
 
 
+# REGISTER CONTROLLER
 class RegisterController(object):
 
     @classmethod
@@ -30,3 +32,14 @@ class RegisterController(object):
         """
         """
         return flask_bcrypt.generate_password_hash(password).decode('utf-8')
+
+    @classmethod
+    def register_user(cls, email, pseudo: str, password: str) -> bool:
+        """
+        """
+        user = User.getByEmail(email)
+        if not user:
+            hash_psswd = cls.hash_password(password)
+            User.save_user(email, pseudo, hash_psswd)
+            return True
+        return False
