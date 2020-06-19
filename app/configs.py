@@ -15,6 +15,7 @@ class Config(object):
     # KEYS
     SECRET_KEY = os.environ.get('SECRET_KEY')
     WTF_CSRF_SECRET_KEY = os.environ.get('WTF_CSRF_SECRET_KEY')
+    WTF_CSRF_ENABLED = True
 
     # FLASK BCRYPT
     BCRYPT_LOG_ROUNDS = 12
