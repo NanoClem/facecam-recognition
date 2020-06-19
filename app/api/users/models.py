@@ -8,7 +8,7 @@ def create_user_model(ns):
     return ns.model('User', {
         "_id"        : fields.String(description='unique identifier of the frame'),
         "pseudo"     : fields.String(descritpion='pseudo of the user'),
-        'avatar'     : fields.String(description='avatard img of the user', default=''),
+        'avatar'     : fields.String(description='avatard img of the user', default=None),
         'email'      : fields.String(description='email of the user'),
         'password'   : fields.String(description='password of the user'),
         'api_key'    : fields.String(description='api key of the user', default=None),
