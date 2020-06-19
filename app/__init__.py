@@ -13,15 +13,15 @@ base_static_path = os.path.join(base_path, 'static')
 
 # FLASK APP FACTORY
 def create_app(config_object=Config):
-    """Create a new Flask app object
+    """Create a new Flask app
     
     Parameters
     -----
-        config_object (module) -- file dedicated to configuration in Flask env (default: settings)
+        config_object (class/module) -- file or class dedicated to configuration in Flask env (default: Config)
     
     Returns
     -----
-        Flask -- Instanciated Flask object with all configurations and app setup 
+        Flask -- Instanciated Flask object with all configurations, extensions and app setup 
     """
     from .customs_encoders import ObjectIdConverter, MongoJSONEncoder
     from .extensions import mongo, csrf, login_manager, flask_bcrypt
