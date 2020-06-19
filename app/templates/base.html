@@ -17,11 +17,14 @@
         <div>
             Face recognition app :
             <a href={{ url_for('home.home') }}>Home</a>
-            <a href={{ url_for('login.login') }}>Login</a>
-            <a href={{ url_for('register.register') }}>Create account</a>
-            <a href={{ url_for('dashboard.dashboard') }}>Dashboard</a>
-            <a href={{ url_for('logout.logout') }}>Logout</a>
-            
+            {% if current_user.is_authenticated %}
+                <a href={{ url_for('dashboard.dashboard') }}>Dashboard</a>
+                <a href={{ url_for('logout.logout') }}>Logout</a>
+            {% else %}
+                <a href={{ url_for('login.login') }}>Login</a>
+                <a href={{ url_for('register.register') }}>Create account</a>
+            {% endif %}
+
         </div>
         <hr>
         <!-- Temp server side login verification message -->
