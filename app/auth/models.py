@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_login import UserMixin
 import bcrypt
 
@@ -32,7 +33,8 @@ class User(UserMixin):
         return {
             'email': self.email,
             'pseudo': self.pseudo,
-            'password': self.password
+            'password': self.password,
+            'created_at': datetime.now()
         }
 
     @classmethod
