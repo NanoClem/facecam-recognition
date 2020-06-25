@@ -9,7 +9,11 @@ from .face_training import getEncodedFaces
 
 
 
-def drawLabeledBox(img: np.array, top: int, right: int, bottom: int, left: int, label: str, font: int=cv2.FONT_HERSHEY_DUPLEX, textColor: tuple=(255, 255, 255), thickColor: tuple=(255, 0, 0), thickWidth: int=2):
+def drawLabeledBox(img: np.array, top: int, right: int, bottom: int, left: int, label: str, 
+                   font: int=cv2.FONT_HERSHEY_DUPLEX, 
+                   textColor: tuple=(255, 255, 255), 
+                   thickColor: tuple=(255, 0, 0), 
+                   thickWidth: int=2):
     """Draw a box and a label on an image with a given location
     
     Parameters
@@ -75,14 +79,14 @@ def classifyFace(im: str, scaling: int=1) -> list:
             name = knownFacesNames[bestMatchIndex]  # get the name of the face
 
         ##TODO : see if its posible to check if the image already exists, and don't append data if so
-        data.append( {'imgPath': im, 'name': name, 'encoding': list(face), 'encoded_at': datetime.now()} )
+        data.append( {'imgPath': im, 'name': name, 'encoding': list(face)} )
 
         # DRAW A BOW AND A LABEL FOR THE FACE
         for location, d in zip(faceLocations, data):
             loc = tuple(int(l/scaling) for l in location)   # turn back face location to its original size
             img = drawLabeledBox(img, *loc, d['name'])      # add a labeled bow on the base untouched img
 
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert back to BGR since we display with opencv
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert back to RGB since we display with opencv
 
     # DISPLAY RESULTING IMG
     while True:
