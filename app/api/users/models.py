@@ -1,4 +1,5 @@
 from flask_restplus import fields
+from ..custom_fields import ObjectIdField
 
 
 # USER MODEL
@@ -6,7 +7,7 @@ def create_user_model(ns):
     """ Create a model for users
     """
     return ns.model('User', {
-        "_id"        : fields.String(description='unique identifier of the frame'),
+        "_id"        : ObjectIdField(description='unique identifier of the frame'),
         "pseudo"     : fields.String(descritpion='pseudo of the user'),
         'avatar'     : fields.String(description='avatard img of the user', default=None),
         'email'      : fields.String(description='email of the user'),
