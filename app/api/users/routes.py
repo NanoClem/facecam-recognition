@@ -2,7 +2,8 @@ from bson.errors import InvalidId
 from flask import make_response
 from flask_restplus import Resource
 
-from ..users import ns, db, ctrl, model
+from ..users import ns, model
+from .controllers import User
 
 
 
@@ -23,7 +24,7 @@ class UserList(Resource):
     def get(self):
         """ Return a list of all stored users
         """
-        return ctrl.getAll(), 200
+        return User.getAll(), 200
 
 
     @ns.doc('create_many_users')
@@ -32,7 +33,7 @@ class UserList(Resource):
     def post(self):
         """ Create many users
         """
-        return make_response(ctrl.createMany(ns.payload), 201)
+        return make_response(User.createMany(ns.payload), 201)
 
 
 #---------------------------------------------
@@ -41,7 +42,7 @@ class UserList(Resource):
 
 @ns.route('/', strict_slashes = False)
 @ns.response(404, 'user not found')
-class User(Resource):
+class OneUser(Resource):
     """
     """
 
@@ -51,7 +52,7 @@ class User(Resource):
     def post(self):
         """ Create a new user
         """
-        return make_response(ctrl.create_user(ns.payload), 201)
+        return make_response(User.create_user(ns.payload), 201)
 
 
     @ns.doc('get_one_user')
@@ -61,7 +62,7 @@ class User(Resource):
     def get(self):
         """ Get one or many users matching with given body
         """
-        return ctrl.get_user(ns.payload), 200
+        return User.get_user(ns.payload), 200
 
 
 #---------------------------------------------
@@ -81,7 +82,7 @@ class UserByPseudo(Resource):
     def get(self, pseudo):
         """ Get a user by its pseudo
         """
-        return ctrl.getByPseudo(pseudo), 200
+        return User.getByPseudo(pseudo), 200
 
 
 #---------------------------------------------
@@ -101,7 +102,7 @@ class UserByEmail(Resource):
     def get(self, email):
         """ Get a user by its email
         """
-        return ctrl.getByEmail(email), 200
+        return User.getByEmail(email), 200
 
 
 #---------------------------------------------
@@ -121,7 +122,7 @@ class UserByID(Resource):
     def get(self, id):
         """ Returns a user by its id
         """
-        return ctrl.getByID(id), 200
+        return User.getByID(id), 200
 
 
     @ns.doc('delete_user_by_id')
@@ -129,7 +130,7 @@ class UserByID(Resource):
     def delete(self, id):
         """ Delete a user by its id
         """
-        return make_response(ctrl.deleteById(id), 204)
+        return make_response(User.deleteById(id), 204)
 
 
     @ns.doc('update_user_by_id')
@@ -137,4 +138,4 @@ class UserByID(Resource):
     def put(self, id):
         """ Update a user by its id
         """
-        return make_response(ctrl.updateById(id, ns.payload), 204)
+        return make_response(User.updateById(id, ns.payload), 204)

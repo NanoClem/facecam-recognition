@@ -1,7 +1,7 @@
 from flask import flash, redirect
 
 from ..extensions import flask_bcrypt
-from .models import User
+from ..api.users.controllers import User
 
 
 
@@ -15,10 +15,10 @@ class LoginController(object):
         return flask_bcrypt.check_password_hash(hash_psswd, plain_psswd)
 
     @classmethod
-    def try_login(cls, username: str, password: str) -> bool:
+    def try_login(cls, email: str, password: str) -> bool:
         """
         """
-        user = User.getByEmail(username)
+        user = User.getByEmail(email)
         if user:
             return cls.check_password(password, user['password'])
         return False
@@ -39,7 +39,6 @@ class RegisterController(object):
         """
         user = User.getByEmail(email)
         if not user:
-            hash_psswd = cls.hash_password(password)
-            User.save_user(email, pseudo, hash_psswd)
-            return True
+            user_obj = User(email, pseudo, cls.hash_password(password))
+            return True if User.create_user(user_obj.toJSON()) else False
         return False

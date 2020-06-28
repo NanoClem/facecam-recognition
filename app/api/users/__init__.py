@@ -2,7 +2,6 @@ from flask_restplus import Namespace
 
 from app.extensions import mongo
 from .models import create_user_model
-from .controllers import UserController
 
 
 # NAMESPACE
@@ -10,9 +9,7 @@ ns = Namespace('user',
                 description = 'Users related operations', 
                 endpoint='user')
 
-db    = mongo.db.users            # db collection
-model = create_user_model(ns)     # model
-ctrl  = UserController(db, ns)    # record controller
+model = create_user_model(ns)   # api model
 
 
 def init_api(api):

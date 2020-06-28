@@ -3,7 +3,7 @@ from wtforms import PasswordField, SubmitField, BooleanField, StringField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import InputRequired, DataRequired, Email, EqualTo, Length, ValidationError
 
-from .models import User
+from ..api.users.controllers import User
 
 
 # CUSTOM VALIDATORS
