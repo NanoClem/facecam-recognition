@@ -1,8 +1,8 @@
 from bson.errors import InvalidId
-from flask import make_response
 from flask_restplus import Resource
 
-from ..faces import ns, db, ctrl, model
+from ..faces import ns, model
+from .controllers import FaceController
 
 
 
@@ -14,5 +14,6 @@ class FaceList(Resource):
 
     @ns.doc('get_all_faces')
     @ns.response(200, 'Success')
+    @ns.marshal_list_with(model)
     def get(self):
-        return make_response(ctrl.getAll(), 200)
+        return FaceController.getAll(), 200

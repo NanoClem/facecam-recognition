@@ -2,14 +2,18 @@ from flask import jsonify
 from datetime import datetime
 from bson.errors import InvalidId
 
+from ...extensions import mongo
+from ..faces import ns
+
 
 
 class FaceController(object):
     """
     """
     
-    def __init__(self, database, namespace):
+    @classmethod
+    def getAll(cls):
+        """ Get all faces data stored in database
         """
-        """
-        self.db = database
-        self.ns = namespace
+        cursor = mongo.db.faces.find({})
+        return list(cursor)
