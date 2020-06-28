@@ -1,8 +1,15 @@
 from flask_restplus import Namespace
+import os
 
 from app.extensions import mongo
 from .models import create_face_model
 from .controllers import FaceController
+
+
+
+# IMAGES AND TRAINING DIRECTORIES
+BASE_DIR = os.path.dirname(os.path.relpath(__file__))
+train_dir    = os.path.join(BASE_DIR, 'face_imgs')
 
 
 # NAMESPACE

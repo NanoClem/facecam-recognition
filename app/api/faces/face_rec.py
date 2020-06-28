@@ -5,7 +5,7 @@ from datetime import datetime
 import cv2
 import os
 
-from .face_training import getEncodedFaces
+from .face_detec import trainAll
 
 
 
@@ -54,7 +54,7 @@ def classifyFace(im: str, scaling: int=1) -> list:
     -----
         list -- data about all encoded faces in the given img
     """
-    knownFacesData  = getEncodedFaces(('jpg', 'jpeg', 'png'))
+    knownFacesData  = trainAll(('jpg', 'jpeg', 'png'))
     facesEncoded    = [face['encoding'] for face in knownFacesData]
     knownFacesNames = [face['name'] for face in knownFacesData]
 
