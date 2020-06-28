@@ -6,13 +6,13 @@ import face_recognition as fr
 
 
 
-def getEncoding(img_path: str, extensions: tuple) -> list:
+def getEncoding(img, extensions: tuple=()) -> list:
     """Detect and encode one or many faces contained in the given img.
     This function is more suited for an api request.
     
     Parameters
     -----
-        img_path (str) -- image file path
+        img -- image file path or file stream
         extensions (tuple) -- img extensions filter (default : ())
     
     Returns
@@ -22,15 +22,15 @@ def getEncoding(img_path: str, extensions: tuple) -> list:
     encoding = []
     nb_faces = 0
 
-    if not extensions or img_path.endswith(extensions):
-        img = fr.load_image_file(img_path)
-        faces_loc = fr.face_locations(img)
+    if not extensions or img.endswith(extensions):
+        im = fr.load_image_file(img)
+        faces_loc = fr.face_locations(im)
         # CHECK IF AT LEAST ONE FACE IS FOUND
         if len(faces_loc) > 0 :
             nb_faces = len(faces_loc)
             encoding = fr.face_encodings(face_image=img, known_face_locations=faces_loc).tolist()
 
-    return {'img': img_path, 'nb_faces': nb_faces, 'encoding': encoding}
+    return {'img': img, 'nb_faces': nb_faces, 'encoding': encoding}
 
 
 

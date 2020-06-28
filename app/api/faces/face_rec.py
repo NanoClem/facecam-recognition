@@ -81,7 +81,7 @@ def classifyFace(im: str, scaling: int=1) -> list:
         ##TODO : see if its posible to check if the image already exists, and don't append data if so
         data.append( {'imgPath': im, 'name': name, 'encoding': list(face)} )
 
-        # DRAW A BOW AND A LABEL FOR THE FACE
+        # DRAW A BOX AND A LABEL FOR THE FACE
         for location, d in zip(faceLocations, data):
             loc = tuple(int(l/scaling) for l in location)   # turn back face location to its original size
             img = drawLabeledBox(img, *loc, d['name'])      # add a labeled bow on the base untouched img
