@@ -79,7 +79,7 @@ def classifyFace(im: str, scaling: int=1) -> list:
             name = knownFacesNames[bestMatchIndex]  # get the name of the face
 
         ##TODO : see if its posible to check if the image already exists, and don't append data if so
-        data.append( {'imgPath': im, 'name': name, 'encoding': list(face)} )
+        data.append( {'img': im, 'name': name, 'encoding': list(face)} )
 
         # DRAW A BOX AND A LABEL FOR THE FACE
         for location, d in zip(faceLocations, data):
