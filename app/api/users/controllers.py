@@ -108,7 +108,7 @@ class User(UserMixin):
         """ Create a new user
         """
         if cls.exists(data):
-            ns.abort(409, message="user already exists", data={})
+            ns.abort(409, message="user already exists")
 
         cpy_data = data
         cpy_data['created_at'] = datetime.now()
@@ -143,7 +143,7 @@ class User(UserMixin):
             mongo.db.users.update_one({'_id': id}, {'$set': data})
             return ''
         except InvalidId:
-            ns.abort(422, message="Invalid id {}".format(id), data={})
+            ns.abort(422, message="Invalid id : {}".format(id))
 
 
     #---------------------------------------------
@@ -158,7 +158,7 @@ class User(UserMixin):
             mongo.db.users.delete_one({'_id': id})
             return ''
         except InvalidId:
-            ns.abort(422, message="Invalid id {}".format(id), data={})
+            ns.abort(422, message="Invalid id {}".format(id))
 
 
 # USER LOADER
