@@ -84,9 +84,7 @@ class User(UserMixin):
         """ Get a user by its pseudo
         """
         data = mongo.db.users.find_one({"pseudo": pseudo})
-        if data:
-            return data
-        return {}
+        return data if data else {}
 
 
     @classmethod
@@ -94,9 +92,7 @@ class User(UserMixin):
         """ Get a user by its email
         """
         data = mongo.db.users.find_one({"email": email})
-        if data:
-            return data
-        return {}
+        return data if data else {}
         
 
     #---------------------------------------------
