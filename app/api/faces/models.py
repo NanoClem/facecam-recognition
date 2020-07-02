@@ -16,7 +16,7 @@ def create_face_model(ns):
     return ns.model('Face', {
         "_id"        : ObjectIdField(description='unique identifier of the face'),
         "name"       : fields.String(descritpion='name given to the face', default='Unknown'),
-        'img'        : fields.Integer(description='img associated with the face'),
+        'img'        : fields.String(description='img associated with the face'),
         'encoding'   : fields.List(fields.Float(), description='encoded face in the img'),
         'private'    : fields.Boolean(description='tells if the img containing the face can be displayed publicly or not', default=False),
         'created_at' : fields.String(description='date of creation')
