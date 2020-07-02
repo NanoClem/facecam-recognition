@@ -5,7 +5,7 @@ from datetime import datetime
 import cv2
 import os
 
-from .face_detec import trainAll
+from .face_training import trainAll
 
 
 

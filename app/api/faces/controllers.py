@@ -1,6 +1,7 @@
 import os
-import numpy
-from flask import jsonify
+import numpy as np
+import json
+from flask_restplus.utils import unpack
 from datetime import datetime
 from bson.errors import InvalidId
 import face_recognition as fr
@@ -21,7 +22,7 @@ class FaceController(object):
 
 
     @classmethod
-    def exists(cls, face_data):
+    def _exists(cls, face_data):
         """ Tells if a face document already exists in database
         """
         return mongo.db.faces.count_documents(face_data, limit=1) != 0
@@ -46,11 +47,81 @@ class FaceController(object):
     #---------------------------------------------
 
     @classmethod
-    def getAll(cls):
+    def getAll(cls) -> list:
         """ Get all faces data stored in database
         """
         cursor = mongo.db.faces.find({})
         return list(cursor)
+
+
+    @classmethod
+    def getAllEncodings(cls) -> list:
+        """ Get all face encodings stored in database
+        """
+        cursor = mongo.db.faces.find({}, {'encoding': 1, '_id': 0})     # remove default included id field
+        res    = list(map(lambda doc : doc['encoding'], list(cursor)))  # mapping all encoding as a list
+        return res
+        
+
+    @classmethod
+    def getAllNames(cls) -> list:
+        """ Get all face encodings stored in database
+        """
+        cursor = mongo.db.faces.find({}, {'name': 1, '_id': 0})         # remove default included id field
+        res    = set(map(lambda doc : doc['name'], list(cursor)))       # mapping all encoding as a list
+        return list(res)
+
+
+    @classmethod
+    def getByEncoding(cls, encoding) -> dict:
+        """ Get a face document by its encoding
+        """
+        data = mongo.db.faces.find_one({'encoding': encoding})
+        return data if data else {}
+
+
+    #---------------------------------------------
+    #   SAVE DATA
+    #---------------------------------------------
+
+    @classmethod
+    def save_face(cls, data: dict) -> dict:
+        """Save one face data in the database
+        
+        Parameters
+        -----
+            data (dict) -- face data
+        """
+        if cls._exists(data):
+            ns.abort(409, message="face already exists")
+
+        cpy_data = data
+        cpy_data['created_at'] = datetime.now()
+        res = mongo.db.faces.insert_one(cpy_data)
+        return {'inserted_id': res.inserted_id}
+
+
+    @classmethod
+    def save_many(cls, data: list) -> dict:
+        """Save many face data all at once in the database
+        
+        Parameters
+        -----
+            data (list) -- [description]
+        
+        Returns
+        -----
+            dict -- [description]
+        """
+        cpy_data = data
+        for d in cpy_data:
+            if cls._exists(d):
+                cpy_data.remove(d)
+            else:
+                d['created_at'] = datetime.now()
+        
+        res = mongo.db.faces.insert_many(cpy_data)
+        return {'nb': len(res.inserted_ids), 'inserted_ids': res.inserted_ids}
 
 
     #---------------------------------------------
@@ -81,27 +152,45 @@ class FaceController(object):
             nb_faces = len(faces_loc)
             if nb_faces > 0 :
                 encoding = fr.face_encodings(face_image=im, known_face_locations=faces_loc)
-                encoding = list(map(list, encoding))    # convert all numpy arrays into list
+                encoding = list(map(lambda elem : elem.tolist(), encoding))    # convert all numpy arrays into list
 
-        return jsonify({'img': img.filename, 'nb_faces': nb_faces, 'encoding': encoding})
+        return {'img': img.filename, 'nb_faces': nb_faces, 'encoding': encoding}
 
 
     #---------------------------------------------
-    #   SAVE DATA
+    #   FACE RECOGNITION
     #---------------------------------------------
 
     @classmethod
-    def save_face(cls, data: dict) -> dict:
-        """Save one face in the database
+    def classifyFace(cls, img) -> list:
+        """Detects and attempts to recognize each face in the given img.
+        A face is recognized with the smallest distance between the computed encoding and stored ones.
         
         Parameters
         -----
-            data (dict) -- face data
+            im (str) -- image file stream
+        
+        Returns
+        -----
+            list -- data about all recognized faces
         """
-        if cls.exists(data):
-            ns.abort(409, message="face already exists")
+        # GET ALL FACE ENCODINGS
+        knownFacesEncoding = cls.getAllEncodings()
+        knownFacesEncoding = np.asarray(knownFacesEncoding, dtype=np.float32)   # convert into ndarray for face_recognition methods
 
-        cpy_data = data
-        cpy_data['created_at'] = datetime.now()
-        res = mongo.db.faces.insert_one(cpy_data)
-        return jsonify( {'inserted_id': res.inserted_id} )
+        # FACE DETECTION AND ENCODING
+        newFaces = cls.getEncoding(img)
+
+        data = []
+        for face in newFaces['encoding']:
+            # SEE IF THE FACE IS MATCHING WITH A KNOWN ONE
+            matches = fr.compare_faces(knownFacesEncoding, face)
+            # FIND THE KNOWN FACE WITH THE SMALLEST DISTANCE
+            faceDistances    = fr.face_distance(knownFacesEncoding, face)
+            bestMatchIndex   = np.argmin(faceDistances)
+            matchingEncoding = matches[bestMatchIndex]
+            if matchingEncoding:
+                res = knownFacesEncoding[bestMatchIndex].tolist( )
+                data.append(cls.getByEncoding(res))
+
+        return data

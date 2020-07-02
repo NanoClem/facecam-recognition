@@ -1,10 +1,10 @@
 import os
 import json
+import requests
 import face_recognition as fr
 
-
-
 ALLOWED_EXTENSIONS = ('jpg', 'jpeg', 'png', 'gif')
+
 
 
 def getTrainEncoding(img_path: str) -> list:
@@ -57,7 +57,7 @@ def trainAll(train_dir: str) -> list:
         for img_path in os.listdir(d):
             img = os.path.join(d, img_path)
             face_encoding = getTrainEncoding(img)
-            data.append( {'imgPath': img, 'name': face_dir.replace('_', ' '), 'encoding': face_encoding} )
+            data.append( {'img': img, 'name': face_dir.replace('_', ' '), 'encoding': face_encoding} )
 
     return data
 
@@ -69,9 +69,14 @@ if __name__ == "__main__":
 
     BASE_DIR     = os.path.dirname(os.path.relpath(__file__))   # directory where this file is
     train_dir    = os.path.join(BASE_DIR, 'face_imgs')          # directory where training imgs are
-    trained_data = trainAll(train_dir, ('jpg', 'jpeg', 'png'))
+    trained_data = trainAll(train_dir)
+
+    # SAVE TRAINED DATA
+    url = 'http://localhost:5000/api/faces'
+    res = requests.post(url, json=trained_data)
+    print(json.dumps(res.json(), indent=4))
+
     
-    print(json.dumps(trained_data, indent=4))
 
     
 
