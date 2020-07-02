@@ -6,9 +6,9 @@ from .models import create_face_model
 
 
 # NAMESPACE
-ns = Namespace('face', 
+ns = Namespace('faces', 
                 description = 'Faces related operations', 
-                endpoint='face')
+                endpoint='faces')
 
 model = create_face_model(ns)
 
