@@ -1,5 +1,5 @@
 from bson.errors import InvalidId
-from flask import make_response
+from flask import make_response, jsonify
 from flask_restplus import Resource
 
 from ..users import ns, model
@@ -33,7 +33,7 @@ class UserList(Resource):
     def post(self):
         """ Create many users
         """
-        return make_response(User.createMany(ns.payload), 201)
+        return make_response(jsonify(User.createMany(ns.payload), 201))
 
 
 #---------------------------------------------
@@ -52,7 +52,7 @@ class OneUser(Resource):
     def post(self):
         """ Create a new user
         """
-        return make_response(User.create_user(ns.payload), 201)
+        return make_response(jsonify(User.create_user(ns.payload), 201))
 
 
     @ns.doc('get_one_user')
@@ -130,7 +130,7 @@ class UserByID(Resource):
     def delete(self, id):
         """ Delete a user by its id
         """
-        return make_response(User.deleteById(id), 204)
+        return make_response(jsonify(User.deleteById(id), 204))
 
 
     @ns.doc('update_user_by_id')
@@ -138,4 +138,4 @@ class UserByID(Resource):
     def put(self, id):
         """ Update a user by its id
         """
-        return make_response(User.updateById(id, ns.payload), 204)
+        return make_response(jsonify(User.updateById(id, ns.payload), 204))

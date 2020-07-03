@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_login import UserMixin
 
 from datetime import datetime
@@ -109,7 +108,7 @@ class User(UserMixin):
         cpy_data = data
         cpy_data['created_at'] = datetime.now()
         res = mongo.db.users.insert_one(cpy_data)
-        return jsonify( {'inserted_id': res.inserted_id} )
+        return {'inserted_id': res.inserted_id}
 
 
     @classmethod
@@ -124,7 +123,7 @@ class User(UserMixin):
                 data['created_at'] = datetime.now()
         
         res = mongo.db.users.insert_many(cpy_data)
-        return jsonify( {'inserted_ids': res.inserted_ids} )
+        return {'inserted_ids': res.inserted_ids}
 
 
     #---------------------------------------------
