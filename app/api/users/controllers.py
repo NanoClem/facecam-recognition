@@ -112,18 +112,18 @@ class User(UserMixin):
 
 
     @classmethod
-    def createMany(cls, dataList):
+    def createMany(cls, data):
         """ Create multiple data documents
         """
-        cpy_data = dataList
-        for data in dataList:
-            if cls.exists(data):   # avoid duplicates
-                cpy_data.remove(data)
+        cpy_data = data
+        for d in cpy_data:
+            if cls.exists(d):       # avoid duplicates
+                cpy_data.remove(d)
             else:
-                data['created_at'] = datetime.now()
+                d['created_at'] = datetime.now()
         
         res = mongo.db.users.insert_many(cpy_data)
-        return {'inserted_ids': res.inserted_ids}
+        return {'inserted_ids': res.inserted_ids, 'nb': len(res.inserted_ids)}
 
 
     #---------------------------------------------
