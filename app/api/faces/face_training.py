@@ -47,8 +47,11 @@ def trainAll(train_dir: str) -> list:
     -----
         list -- A list of encoded faces data
     """
-    data = []
-    for face_dir in os.listdir(train_dir):
+    data     = []
+    img_dirs = os.listdir(train_dir)
+    img_dirs.remove('Test')             # 'Test' dir is not for training
+
+    for face_dir in img_dirs:
         d = os.path.join(train_dir, face_dir)
 
         if not os.path.isdir(d):
