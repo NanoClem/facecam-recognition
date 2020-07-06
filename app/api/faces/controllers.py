@@ -33,7 +33,7 @@ class FaceController(object):
     #     """
     #     """
     #     args     = my_parser.parse_args()
-    #     upFile   = args['file']
+    #     upFile   = args['img']
     #     filename = secure_filename(upFile.filename)
 
     #     if upFile.mimetype == 'application/xls' and filename.endswith(cls.ALLOWED_EXTENSIONS):
@@ -59,7 +59,7 @@ class FaceController(object):
         """ Get all face encodings stored in database
         """
         cursor = mongo.db.faces.find({}, {'encoding': 1, '_id': 0})     # remove default included id field
-        res    = list(map(lambda doc : doc['encoding'], list(cursor)))  # mapping all encoding as a list
+        res    = list(map(lambda doc : doc['encoding'], list(cursor)))  # mapping all encoding
         return res
         
 
@@ -67,9 +67,8 @@ class FaceController(object):
     def getAllNames(cls) -> list:
         """ Get all face encodings stored in database
         """
-        cursor = mongo.db.faces.find({}, {'name': 1, '_id': 0})         # remove default included id field
-        res    = set(map(lambda doc : doc['name'], list(cursor)))       # mapping all encoding as a list
-        return list(res)
+        cursor = mongo.db.faces.distinct('name')
+        return cursor
 
 
     @classmethod
@@ -174,23 +173,21 @@ class FaceController(object):
         -----
             list -- data about all recognized faces
         """
-        # GET ALL FACE ENCODINGS
-        knownFacesEncoding = cls.getAllEncodings()
-        knownFacesEncoding = np.asarray(knownFacesEncoding, dtype=np.float32)   # convert into ndarray for face_recognition methods
-
         # FACE DETECTION AND ENCODING
         newFaces = cls.getEncoding(img)
-
         data = []
-        for face in newFaces['encoding']:
-            # SEE IF THE FACE IS MATCHING WITH A KNOWN ONE
-            matches = fr.compare_faces(knownFacesEncoding, face)
-            # FIND THE KNOWN FACE WITH THE SMALLEST DISTANCE
-            faceDistances    = fr.face_distance(knownFacesEncoding, face)
-            bestMatchIndex   = np.argmin(faceDistances)
-            matchingEncoding = matches[bestMatchIndex]
-            if matchingEncoding:
-                res = knownFacesEncoding[bestMatchIndex].tolist( )
-                data.append(cls.getByEncoding(res))
+
+        if newFaces['nb_faces'] > 0:
+            knownFacesEncoding = cls.getAllEncodings()
+            knownFacesEncoding = np.asarray(knownFacesEncoding, dtype=np.float32)   # convert into ndarray for face_recognition methods
+            
+            for face in newFaces['encoding']:
+                matches          = fr.compare_faces(knownFacesEncoding, face)   # SEE IF THE FACE IS MATCHING WITH A KNOWN ONE
+                faceDistances    = fr.face_distance(knownFacesEncoding, face)   # FIND THE KNOWN FACE WITH THE SMALLEST DISTANCE
+                bestMatchIndex   = np.argmin(faceDistances)
+                matchingEncoding = matches[bestMatchIndex]
+                if matchingEncoding:
+                    res = knownFacesEncoding[bestMatchIndex].tolist( )
+                    data.append(cls.getByEncoding(res))
 
         return data

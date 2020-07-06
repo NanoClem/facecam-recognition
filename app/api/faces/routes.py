@@ -3,8 +3,9 @@ from flask import make_response, jsonify
 from flask_restplus import Resource
 from werkzeug.utils import secure_filename
 
+from ..authorizations import token_required
 from .. import parsers
-from ..faces import ns, model
+from . import ns, model
 from .controllers import FaceController
 
 
@@ -19,6 +20,7 @@ class FaceList(Resource):
     @ns.doc('get_all_faces')
     @ns.response(200, 'success')
     @ns.marshal_list_with(model)
+    @token_required
     def get(self):
         """ Get all stored faces data
         """
@@ -27,6 +29,7 @@ class FaceList(Resource):
     @ns.doc('save_many_faces')
     @ns.response(201, 'faces successfuly saved')
     @ns.expect([model])
+    @token_required
     def post(self):
         """ Save many faces data
         """
@@ -42,6 +45,7 @@ class FaceList(Resource):
 class FaceEncodings(Resource):
 
     @ns.doc('get_all_face_encodings')
+    @token_required
     def get(self):
         """ Get all stored face encodings
         """
@@ -49,6 +53,7 @@ class FaceEncodings(Resource):
 
     @ns.doc('get_by_encoding')
     @ns.marshal_with(model)
+    @token_required
     def post(self):
         """ Get a face document by its encoding
         """
@@ -64,6 +69,7 @@ class FaceEncodings(Resource):
 class FaceNameList(Resource):
 
     @ns.doc('get_all_face_names')
+    @token_required
     def get(self):
         """ Get all known face names
         """
@@ -81,6 +87,7 @@ class FaceDetection(Resource):
 
     @ns.doc('detect_faces')
     @ns.expect(parsers.my_parser)
+    @token_required
     def post(self):
         """ Upload an image file and detect all faces contained in it
         """
@@ -100,6 +107,7 @@ class FaceRecognition(Resource):
     @ns.doc('recognize_faces')
     @ns.expect(parsers.my_parser)
     @ns.marshal_with(model)
+    @token_required
     def post(self):
         """ Upload an image file, detect and attempt to recognize all faces contained in it
         """
