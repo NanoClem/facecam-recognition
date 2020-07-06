@@ -5,7 +5,10 @@ from ..api.users.controllers import User
 
 
 
-# LOGIN CONTROLLER
+#---------------------------------------------
+#   LOGIN
+#---------------------------------------------
+
 class LoginController(object):
 
     @classmethod
@@ -19,12 +22,13 @@ class LoginController(object):
         """
         """
         user = User.getByEmail(email)
-        if user:
-            return cls.check_password(password, user['password'])
-        return False
+        return cls.check_password(password, user['password']) if user else False
+        
 
+#---------------------------------------------
+#   REGISTER
+#---------------------------------------------
 
-# REGISTER CONTROLLER
 class RegisterController(object):
 
     @classmethod
