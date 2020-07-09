@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 from ..authorizations import token_required
 from .. import parsers
-from . import ns, model
+from . import ns, model, comparison_model
 from .controllers import FaceController
 
 
@@ -113,3 +113,19 @@ class FaceRecognition(Resource):
         """
         args = parsers.my_parser.parse_args()
         return FaceController.classifyFace(args['img']), 200
+
+
+@ns.route('/face_match/<float:tolerance>', strict_slashes = False)
+@ns.param('tolerance', 'tolerance value for faces comparison')
+@ns.response(404, 'not found')
+@ns.response(200, 'success')
+class FaceMatch(Resource):
+    
+    @ns.doc('match_faces')
+    @ns.expect(comparison_model)
+    @token_required
+    def post(self, tolerance):
+        """ Determines if two faces match according to a tolerance value
+        """
+        payload = ns.payload
+        return make_response(jsonify(FaceController.compareFaces(payload['img1_enc'], payload['img2_enc'], tolerance)), 200)

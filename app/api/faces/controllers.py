@@ -161,6 +161,27 @@ class FaceController(object):
     #---------------------------------------------
 
     @classmethod
+    def compareFaces(cls, enc1: list, enc2: list, tolerance: float) -> dict:
+        """Compares two given face encoding and tells if they match
+        according to a tolerance value.
+        
+        Parameters
+        -----
+            enc1 (list) -- first face encoding
+            enc2 (list) -- second face encoding
+            tolerance (float) -- value of tolerance when comparing faces encoding. Lower is more strict.
+        
+        Returns
+        -----
+            bool -- True if they match, otherwise False.
+        """
+        enc1  = np.asarray([enc1], dtype=np.float32)
+        match = True if fr.compare_faces(enc1, enc2)[0] else False      # numpy bools can't be serialized
+        return {"match": match}
+
+
+
+    @classmethod
     def classifyFace(cls, img) -> list:
         """Detects and attempts to recognize each face in the given img.
         A face is recognized with the smallest distance between the computed encoding and stored ones.
@@ -187,7 +208,7 @@ class FaceController(object):
                 bestMatchIndex   = np.argmin(faceDistances)
                 matchingEncoding = matches[bestMatchIndex]
                 if matchingEncoding:
-                    res = knownFacesEncoding[bestMatchIndex].tolist( )
+                    res = knownFacesEncoding[bestMatchIndex].tolist()
                     data.append(cls.getByEncoding(res))
 
         return data
